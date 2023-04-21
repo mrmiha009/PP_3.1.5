@@ -11,6 +11,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -62,5 +63,11 @@ public class UserController {
     public String deleteUser(@RequestParam("action") Integer id) {
         userService.delete(id);
         return "redirect:/admin";
+    }
+    @GetMapping("/user")
+    public String getUserInfo(Principal principal, Model model) {
+        User user = (User) userService.loadUserByUsername(principal.getName());
+        model.addAttribute("user",user);
+        return "user";
     }
 }

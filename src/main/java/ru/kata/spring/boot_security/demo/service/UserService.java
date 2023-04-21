@@ -10,7 +10,8 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
@@ -18,16 +19,19 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    @PersistenceContext
+    private EntityManager em;
 
     public UserService(UserRepository userRepository, RoleRepository roleRepository1) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository1;
     }
 
-
     @Transactional
     public void add(User user) {
-        userRepository.save(user);
+        if (userRepository.findByUsername(user.getUsername()) == null){
+            userRepository.save(user);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -51,17 +55,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
+        return em.createQuery("select u from User u left join fetch u.roles where u.username=:username",
+                        User.class).setParameter("username", username).getSingleResult();
     }
+
     @Transactional
     public List<Role> listRoles() {
         return roleRepository.findAll();
     }
+
 }

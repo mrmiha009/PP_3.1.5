@@ -26,7 +26,7 @@
         <td th:text="${user.age}"/>
         <td th:text="${user.club}"/>
         <td th:text="${user.password}"/>
-        <td th:each="role: ${user.roles}" th:text="${role.name}">
+        <td th:each="role: ${user.roles}" th:text="${role.name}"/>
         <td>
             <form method="post" th:action="@{/admin/update}">
                 <button type="submit" th:name="action" th:value="${user.id}">UPDATE</button>

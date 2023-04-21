@@ -26,7 +26,7 @@ public class User implements UserDetails {
     @Column(name = "club")
     private String club;
     @Column(name = "roles")
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
     public User() {
     }
