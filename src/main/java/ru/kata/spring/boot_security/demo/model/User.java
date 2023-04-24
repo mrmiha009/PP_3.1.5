@@ -88,12 +88,12 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(club, user.club) && Objects.equals(roles, user.roles);
+        return id.equals(user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, age, club, roles);
+        return Objects.hash(id);
     }
 
     public void setPassword(String password) {
