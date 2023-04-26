@@ -23,36 +23,23 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @GetMapping("/admin")
-    public String showAllUsers(Model model) {
+    public String showAllUsers(Model model, Principal principal) {
+        User loggedUser = (User) userService.loadUserByUsername(principal.getName());
         List<User> users = userService.listUsers();
-        model.addAttribute("users", users);
-        return "users";
-    }
-
-    @GetMapping("/admin/addUser")
-    public String addUser(Model model) {
+        List<Role> roles = userService.listRoles();
         User user = new User();
-        List<Role> listRoles = userService.listRoles();
+        model.addAttribute("users", users);
+        model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("user", user);
-        model.addAttribute("listRoles", listRoles);
-        return "add-user";
+        model.addAttribute("roles", roles);
+        return "admin";
     }
 
     @GetMapping("/admin/saveUser")
     public String saveUser(@ModelAttribute("user") User user) {
         userService.add(user);
         return "redirect:/admin";
-    }
-
-    @PostMapping("/admin/update")
-    public String updateUser(@RequestParam("action") Integer id, Model model) {
-        User user = userService.getUser(id);
-        List<Role> listRoles = userService.listRoles();
-        model.addAttribute("user", user);
-        model.addAttribute("listRoles", listRoles);
-        return "update-user";
     }
 
     @GetMapping("/admin/updateUserButton")
