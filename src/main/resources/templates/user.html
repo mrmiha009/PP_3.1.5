@@ -14,20 +14,13 @@
 <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
     <!--    Навигация-->
     <div class="container-fluid">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:text="${user.username}"></a>
-            <span class="navbar-brand">with roles:</span>
-            <span class="navbar-brand">
-                <th:block th:each="role : ${user.getRoles()}"
-                          th:text="${role.name.replace('ROLE_','')} + ' '">
-                </th:block>
-            </span>
+        <div class="container-fluid" id="loggedUserNav">
         </div>
         <!--Лог аут-->
         <ul class="nav justify-content-end">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/logout}">Logout</a>
+                    <a class="nav-link" href="/logout">Logout</a>
                 </li>
             </ul>
         </ul>
@@ -57,26 +50,53 @@
                         <th scope="col">Role</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td th:text="${user.id}"></td>
-                        <td th:text="${user.username}"></td>
-                        <td th:text="${user.age}"></td>
-                        <td th:text="${user.club}"></td>
-                        <td>
-                            <th:block th:each="role: ${user.roles}"
-                                      th:text="${role.name.replace('ROLE_','')} + ' '"/>
-                        </td>
-                    </tr>
+                    <tbody id="userData">
                     </tbody>
                 </table>
+
             </div>
         </div>
     </div>
 </div>
-</div>
 </body>
 </html>
 <br>
-</body>
-</html>
+
+<!--Скрипт навигации-->
+<script>
+    fetch("/user/log")
+        .then((response) => response.json())
+        .then(user => {
+            let li = ``;
+            let stringRole = ``;
+            for (role of user.roles) {
+                stringRole += (role.name.replace('ROLE_', '')) + " "
+            }
+            li += ` <a class="navbar-brand">${user.name}</a>
+                            <span class="navbar-brand">with roles:</span>
+                            <span class="navbar-brand">${stringRole}</span>
+                            `;
+            document.getElementById("loggedUserNav").innerHTML = li;
+        });
+</script>
+
+<!--Скрипт таблицы-->
+<script>
+    fetch("/user/log")
+        .then((response) => response.json())
+        .then(user => {
+            let li2 = ``;
+            let stringRole = ``;
+            for (role of user.roles) {
+                stringRole += (role.name.replace('ROLE_', '')) + " "
+            }
+            li2 += `<tr>
+                                        <td>${user.id}</td>
+                                        <td>${user.name} </td>
+                                        <td>${user.age}</td>
+                                        <td>${user.club}</td>
+                                        <td>${stringRole}</td>
+                                    </tr>`;
+            document.getElementById("userData").innerHTML = li2;
+        });
+</script>

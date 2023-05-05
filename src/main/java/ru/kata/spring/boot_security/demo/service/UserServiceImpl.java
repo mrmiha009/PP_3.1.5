@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void add(User user) {
-        if (userRepository.findByUsername(user.getUsername()) == null){
+        if (userRepository.findByUsername(user.getUsername()) == null) {
             userRepository.save(user);
         }
     }
@@ -35,8 +36,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public User getUser(Integer id) {
-        return userRepository.getById(id);
+    public Optional<User> findById(Integer id) {
+        return userRepository.findById(id);
     }
 
     @Transactional

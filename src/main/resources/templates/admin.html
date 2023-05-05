@@ -14,20 +14,13 @@
 <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
     <!--    Навигация-->
     <div class="container-fluid">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:text="${loggedUser.username}"></a>
-            <span class="navbar-brand">with roles:</span>
-            <span class="navbar-brand">
-                <th:block th:each="role : ${loggedUser.getRoles()}"
-                          th:text="${role.name.replace('ROLE_','')} + ' '">
-                </th:block>
-            </span>
+        <div class="container-fluid" id="loggedUserNav">
         </div>
         <!--Лог аут-->
         <ul class="nav justify-content-end">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/logout}">Logout</a>
+                    <a class="nav-link" href="/logout">Logout</a>
                 </li>
             </ul>
         </ul>
@@ -72,200 +65,162 @@
                                 <th scope="col">Delete</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr th:each="user, itemStat: ${users}">
-                                <td th:text="${user.id}">
-                                <td th:text="${user.username}">
-                                <td th:text="${user.age}">
-                                <td th:text="${user.club}">
-                                <td>
-                                    <th:block th:each="role: ${user.roles}"
-                                              th:text="${role.name.replace('ROLE_','')} + ' '"/>
-                                </td>
-                                <!--Окно EDIT-->
-                                <td>
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                            th:attr="data-bs-target='#modal-warning' + ${user.id}">Edit
-                                    </button>
-                                    <div th:fragment="modal" class="modal fade" th:id="'modal-warning' + ${user.id}"
-                                         tabindex="-1" aria-hidden="true">
-                                        <form th:action="@{/admin/updateUserButton}" method="get" th:object="${user}">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5">Edit user</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Закрыть"></button>
+                            <tbody id="data">
+
+                            <!--                                                                 Окно EDIT-->
+                            <div class="modal fade" id="modal-edit" tabindex="-1" aria-hidden="true">
+                                <form>
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5">Edit user</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Закрыть"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row justify-content-center">
+                                                    <label class="text-center fw-bolder">ID</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control"
+                                                               id="editUserId" name="id"
+                                                               placeholder="ID" disabled>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <div class="row justify-content-center">
-                                                            <label class="text-center fw-bolder">ID</label>
-                                                            <div class="col-md-6">
-                                                                <input type="text" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].id}"
-                                                                       placeholder="ID" disabled>
-                                                                <input type="hidden" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].id}"
-                                                                       id="id" name="id">
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Name</label>
-                                                            <div class="col-md-6">
-                                                                <input type="text" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].name}"
-                                                                       id="name" name="name" placeholder="Name">
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Age</label>
-                                                            <div class="col-md-6">
-                                                                <input type="number" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].age}"
-                                                                       id="age" th:name="age" placeholder="Age">
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Club</label>
-                                                            <div class="col-md-6">
-                                                                <input type="text" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].club}"
-                                                                       id="club" name="club" placeholder="Club">
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Password</label>
-                                                            <div class="col-md-6">
-                                                                <input type="password" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].password}"
-                                                                       id="password" name="password"
-                                                                       placeholder="Password">
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Role</label>
-                                                            <select class="col-md-6 w-50 h-25" th:field="*{roles}"
-                                                                    multiple>
-                                                                <th:block th:each="role: ${roles}">
-                                                                    <option th:text="${role.name.replace('ROLE_','')}"
-                                                                            th:value="${role.id}" class="m-2">
-                                                                </th:block>
-                                                            </select>
-                                                        </div>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Name</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control"
+                                                               id="editUserName" name="name" placeholder="Name">
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Age</label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" class="form-control"
+                                                               id="editUserAge" name="age" placeholder="Age">
                                                     </div>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Club</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control"
+                                                               id="editUserClub" name="club" placeholder="Club">
+                                                    </div>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Password</label>
+                                                    <div class="col-md-6">
+                                                        <input type="password" class="form-control"
+                                                               id="editUserPassword" name="password"
+                                                               placeholder="Password">
+                                                    </div>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Role</label>
+                                                    <select class="col-md-6 w-50 h-25" id="editUserRoles"
+                                                            multiple>
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </form>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close
+                                                </button>
+                                                <button type="reset" onclick="editUser()"
+                                                        class="btn btn-primary" id="editUserButton"
+                                                        data-bs-dismiss="modal">Edit
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </td>
-                                <!--                                   Окно DELETE-->
-                                <td>
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:attr="data-bs-target='#modal-delete'
-                                         + ${user.id}">Delete
-                                    </button>
-                                    <div th:fragment="modal" class="modal fade" th:id="'modal-delete' + ${user.id}"
-                                         tabindex="-1" aria-hidden="true">
-                                        <form method="post" th:action="@{/admin/delete}">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5">Delete user</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Закрыть"></button>
+                                </form>
+                            </div>
+
+                            <!--                                   Окно DELETE-->
+                            <div class="modal fade" id="modal-delete" tabindex="-1" aria-hidden="true">
+                                <form>
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5">Delete user</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Закрыть"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row justify-content-center">
+                                                    <label class="text-center fw-bolder">ID</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control"
+                                                               id="deleteUserId" placeholder="ID" disabled>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <div class="row justify-content-center">
-                                                            <label class="text-center fw-bolder">ID</label>
-                                                            <div class="col-md-6">
-                                                                <input type="text" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].id}"
-                                                                       placeholder="ID" disabled>
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Name</label>
-                                                            <div class="col-md-6">
-                                                                <input type="text" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].name}"
-                                                                       placeholder="Name" disabled>
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Age</label>
-                                                            <div class="col-md-6">
-                                                                <input type="number" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].age}"
-                                                                       placeholder="Age" disabled>
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Club</label>
-                                                            <div class="col-md-6">
-                                                                <input type="text" class="form-control"
-                                                                       th:value="${users[__${itemStat.index}__].club}"
-                                                                       placeholder="Club" disabled>
-                                                            </div>
-                                                            <p></p>
-                                                            <label class="text-center fw-bolder">Role</label>
-                                                            <select class="col-md-6" th:field="*{roles}" disabled
-                                                                    multiple>
-                                                                <th:block
-                                                                        th:each="role: ${users[__${itemStat.index}__].roles}">
-                                                                    <option th:text="${role.name.replace('ROLE_','')}"
-                                                                            th:value="${role.id}" class="m-2"></option>
-                                                                </th:block>
-                                                            </select>
-                                                        </div>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Name</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control"
+                                                               id="deleteUserName" placeholder="Name" disabled>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close
-                                                        </button>
-                                                        <button type="submit" class="btn btn-danger" th:name="action"
-                                                                th:value="${users[__${itemStat.index}__].id}">Delete
-                                                        </button>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Age</label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" class="form-control"
+                                                               id="deleteUserAge" placeholder="Age" disabled>
                                                     </div>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Club</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control"
+                                                               id="deleteUserClub" placeholder="Club" disabled>
+                                                    </div>
+                                                    <p></p>
+                                                    <label class="text-center fw-bolder">Role</label>
+                                                    <select class="col-md-6" id="deleteUserRoles" disabled
+                                                            multiple>
+
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </form>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close
+                                                </button>
+                                                <button type="button" onclick="deleteUser()"
+                                                        class="btn btn-danger" id="deleteUserButton"
+                                                        data-bs-dismiss="modal">Delete
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </td>
-                            </tr>
+                                </form>
+                            </div>
                             </tbody>
                         </table>
                     </div>
-                    <!--                    Вкладка новый юзер-->
+                    <!--                                        Вкладка новый юзер-->
                     <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                         <p class="fs-4 fw-bolder bg-light">Add new user</p>
-                        <form th:action="@{/admin/saveUser}" th:object="${user}">
+                        <form id="newUserForm">
                             <div class="row justify-content-center">
-                                <input type="hidden" th:field="*{id}">
+                                <input type="hidden" id="newUserId">
                                 <label class="text-center fw-bolder">Name</label>
                                 <div class="col-md-3">
-                                    <input type="text" th:field="*{name}" class="form-control" placeholder="Name">
+                                    <input type="text" id="newUserName" class="form-control" placeholder="Name">
                                 </div>
                                 <label class="text-center fw-bolder">Age</label>
                                 <div class="col-md-3">
-                                    <input type="number" th:field="*{age}" class="form-control" placeholder="Age">
+                                    <input type="number" id="newUserAge" class="form-control" placeholder="Age">
                                 </div>
                                 <label class="text-center fw-bolder">Club</label>
                                 <div class="col-md-3">
-
-                                    <input type="text" th:field="*{club}" class="form-control" placeholder="Club">
+                                    <input type="text" id="newUserClub" class="form-control" placeholder="Club">
                                 </div>
                                 <label class="text-center fw-bolder">Password</label>
                                 <div class="col-md-3">
-                                    <input type="password" th:field="*{password}" class="form-control"
+                                    <input type="password" id="newUserPassword" class="form-control"
                                            placeholder="Password">
                                 </div>
                                 <label class="text-center fw-bolder">Role</label>
-                                <select class="col-md-3" th:field="*{roles}" multiple>
-                                    <th:block th:each="role: ${roles}">
-                                        <option th:text="${role.name.replace('ROLE_','')}" th:value="${role.id}"
-                                                class="m-2"></option>
-                                    </th:block>
+                                <select class="col-md-3" id="newUserRoles" multiple>
                                 </select>
                                 <p>
                                 <div class="d-grid gap-2 col-2 mx-auto">
-                                    <button type="submit" class="btn btn-success">Add new user</button>
+                                    <button onclick="addUser()" type="reset"
+                                            class="btn btn-success">Add new user
+                                    </button>
                                 </div>
                                 </p>
                             </div>
@@ -291,17 +246,7 @@
                                 <th scope="col">Role</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td th:text="${loggedUser.id}"></td>
-                                <td th:text="${loggedUser.username}"></td>
-                                <td th:text="${loggedUser.age}"></td>
-                                <td th:text="${loggedUser.club}"></td>
-                                <td>
-                                    <th:block th:each="role: ${loggedUser.roles}"
-                                              th:text="${role.name.replace('ROLE_','')} + ' '"/>
-                                </td>
-                            </tr>
+                            <tbody id="userData">
                             </tbody>
                         </table>
                     </div>
@@ -312,3 +257,211 @@
 </div>
 </body>
 </html>
+
+<!--Скрипт навигации-->
+<script>
+    fetch("/user/log")
+        .then((response) => response.json())
+        .then(user => {
+            let li = ``;
+            let stringRole = ``;
+            for (role of user.roles) {
+                stringRole += (role.name.replace('ROLE_', '')) + " "
+            }
+            li += ` <a class="navbar-brand">${user.name}</a>
+                            <span class="navbar-brand">with roles:</span>
+                            <span class="navbar-brand">${stringRole}</span>`;
+            document.getElementById("loggedUserNav").innerHTML = li;
+        })
+</script>
+
+<!--Скрипт вкладки юзер-->
+<script>
+    fetch("/user/log")
+        .then((response) => response.json())
+        .then(user => {
+            let li2 = ``;
+            let stringRole = ``;
+            for (role of user.roles) {
+                stringRole += (role.name.replace('ROLE_', '')) + " "
+            }
+            li2 += `<tr>
+                        <td>${user.id}</td>
+                        <td>${user.name} </td>
+                        <td>${user.age}</td>
+                        <td>${user.club}</td>
+                        <td>${stringRole}</td>
+                     </tr>`;
+            document.getElementById("userData").innerHTML = li2;
+        });
+</script>
+
+<!--Скрипт таблицы юзеров-->
+<script>
+    function funOnLoad() {
+        fetch("admin/users")
+            .then((response) => response.json())
+            .then((json) => {
+                let li = ``;
+                json.forEach((user) => {
+                    let stringRole = ``;
+                    for (role of user.roles) {
+                        stringRole += (role.name.replace('ROLE_', '')) + " "
+                    }
+                    li += `<tr>
+                            <td>${user.id}</td>
+                            <td>${user.name} </td>
+                            <td>${user.age}</td>
+                            <td>${user.club}</td>
+                            <td>${stringRole}</td>
+                            <td>
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-target="#modal-edit" data-bs-id="${user.id}">Edit
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#modal-delete" data-bs-id="${user.id}">Delete
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+                document.getElementById("data").innerHTML = li;
+            });
+    }
+
+    window.onload = funOnLoad();
+</script>
+
+<!--Скрипт окна EDIT-->
+<script>
+    const editModal = document.getElementById('modal-edit')
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+            const recipient = button.getAttribute('data-bs-id')
+            fetch("admin/users/" + recipient)
+                .then((response) => response.json())
+                .then(user => {
+                    document.getElementById("editUserId").setAttribute('value', user.id);
+                    document.getElementById("editUserName").setAttribute('value', user.name);
+                    document.getElementById("editUserAge").setAttribute('value', user.age);
+                    document.getElementById("editUserClub").setAttribute('value', user.club);
+                    document.getElementById("editUserPassword").setAttribute('value', user.password);
+                });
+            fetch("/admin/roles")
+                .then((response) => response.json())
+                .then(json => {
+                    let liRoles = ``;
+                    json.forEach((newUserRole) => {
+                        liRoles += `<option value="${newUserRole.id}" class="m-2">
+                                ${newUserRole.name.replace('ROLE_', '')}</option>`;
+                        document.getElementById("editUserRoles").innerHTML = liRoles;
+                    })
+                });
+        })
+    }
+
+    async function editUser() {
+
+        let id = document.getElementById("editUserId").value;
+        let name = document.getElementById("editUserName").value;
+        let age = document.getElementById("editUserAge").value;
+        let club = document.getElementById("editUserClub").value;
+        let password = document.getElementById("editUserPassword").value;
+        let e = document.getElementById("editUserRoles");
+        let editRole = e.value;
+        let data;
+        if (editRole == "") {
+            data = {id, name, password, age, club};
+        } else {
+            data = {id, name, password, age, club, roles: [{id: editRole}]};
+        }
+        await fetch('admin/users', {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        funOnLoad();
+    }
+</script>
+
+<!--Скрипт окна DELETE-->
+<script>
+    const deleteModal = document.getElementById('modal-delete')
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+            const recipient = button.getAttribute('data-bs-id')
+            fetch("admin/users/" + recipient)
+                .then((response) => response.json())
+                .then(user => {
+                    document.getElementById("deleteUserId").setAttribute('value', user.id);
+                    document.getElementById("deleteUserName").setAttribute('value', user.name);
+                    document.getElementById("deleteUserAge").setAttribute('value', user.age);
+                    document.getElementById("deleteUserClub").setAttribute('value', user.club);
+                    let liDeleteRoles = ``;
+                    for (role of user.roles) {
+                        liDeleteRoles += `<option class="m-2">${role.name.replace('ROLE_', '')}</option>`;
+                    }
+                    document.getElementById("deleteUserRoles").innerHTML = liDeleteRoles;
+                });
+        })
+    }
+
+    async function deleteUser() {
+        const recipient = document.getElementById("deleteUserId").value;
+        await fetch("admin/users/" + recipient, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        funOnLoad();
+    }
+</script>
+
+<!--Скрипт добавления нового юзера-->
+<script>
+    function newUSerRoles() {
+        fetch("/admin/roles")
+            .then((response) => response.json())
+            .then(json => {
+                let liRoles = ``;
+                json.forEach((newUserRole) => {
+                    liRoles += `<option value="${newUserRole.id}" class="m-2">
+                                ${newUserRole.name.replace('ROLE_', '')}</option>`;
+                    document.getElementById("newUserRoles").innerHTML = liRoles;
+                })
+            });
+    }
+
+    window.onload = newUSerRoles();
+
+    async function addUser() {
+
+        let name = document.getElementById("newUserName").value;
+        let age = document.getElementById("newUserAge").value;
+        let club = document.getElementById("newUserClub").value;
+        let password = document.getElementById("newUserPassword").value;
+        let e = document.getElementById("newUserRoles");
+        let newRole = e.value;
+        let data;
+        if (newRole == "") {
+            data = {name, password, age, club};
+        } else {
+            data = {name, password, age, club, roles: [{id: newRole}]};
+        }
+        await fetch('admin/users', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        funOnLoad();
+        document.getElementById("nav-home-tab").click();
+    }
+</script>
