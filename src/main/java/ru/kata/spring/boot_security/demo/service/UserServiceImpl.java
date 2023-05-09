@@ -25,9 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void add(User user) {
-        if (userRepository.findByUsername(user.getUsername()) == null) {
-            userRepository.save(user);
-        }
+        userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
