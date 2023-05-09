@@ -21,12 +21,12 @@ public class UserRESTController {
     }
 
     @GetMapping("/admin/users")
-    ResponseEntity<List<User>> showAllUsers() {
+    public ResponseEntity<List<User>> showAllUsers() {
         return ResponseEntity.ok(userService.listUsers());
     }
 
     @GetMapping("/admin/users/{id}")
-    ResponseEntity<Optional<User>> getUser(@PathVariable int id) {
+    public ResponseEntity<Optional<User>> getUser(@PathVariable int id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
